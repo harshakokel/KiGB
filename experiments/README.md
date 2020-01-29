@@ -1,6 +1,7 @@
 
-#### Replication details
+## Replication details
 
+This repository contains code to replicate the results of Kokel et al. A Unified Framework for Knowledge Intensive Gradient Boosting:Leveraging Human Experts for Noisy Sparse Domains AAAI 2020.
 
 **Standard Baselines**: Comparison of SKiGB performance against SGB (table 2).  
 
