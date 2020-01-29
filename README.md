@@ -1,87 +1,60 @@
 ## KiGB : Knowledge Intensive Gradient Boosting
 
- 
-Incorporating richer human inputs including qualitative constraints such as monotonic and synergistic influences has long been adapted inside AI. Inspired by this, we consider the problem of using such influence statements in the successful gradient-boosting framework. We develop a unified framework for both classification and regression settings that can both effectively and efficiently incorporate such constraints to accelerate learning to a better model. Our results in a large number of standard domains and two particularly novel real-world domains demonstrate the superiority of using domain knowledge rather than treating the human as a mere labeler. 
+Incorporating richer human inputs including qualitative constraints such as monotonic and synergistic influences has long been adapted inside AI. Inspired by this, we consider the problem of using such influence statements in the successful gradient-boosting framework. We develop a unified framework for both classification and regression settings that can both effectively and efficiently incorporate such constraints to accelerate learning to a better model. Our results in a large number of standard domains and two particularly novel real-world domains demonstrate the superiority of using domain knowledge rather than treating the human as a mere labeler.
+
+KiGB is a unified framework for learning gradient boosted decision trees for regression and classification tasks while leveraging human advice for achieving better performance. Technical details are explained in the [blog](https://starling.utdallas.edu/papers/KiGB). For more details refer the [paper](https://personal.utdallas.edu/~hkokel/pdf/Kokel_AAAI20.pdf) 
 
 
-This repository contains code to replicate the results of Kokel et al. *A Unified Framework for Knowledge Intensive Gradient Boosting:Leveraging Human Experts for Noisy Sparse Domains* **AAAI** 2020.
+This package contains two implementation of Knowledge-intensive Gradient Boosting framework:
+- with Gradient Boosted Decision Tree of [Scikit-learn](https://scikit-learn.org) ( SKiGB )
+- with Gradient Boosted Decision Tree of [LightGBM](https://github.com/microsoft/LightGBM) ( LKiGB )
 
-#### Replication details
+Both these implementations are done in python.
 
+## Basic Usage
 
-**Standard Baselines**: Comparison of SKiGB performance against SGB (table 2).  
+```python
+'''Step 1: Import the class'''
+from core.lgbm.lkigb import LKiGB as KiGB
 
+'''Step 2: Import dataset'''
+train_data = pd.read_csv('train.csv')
+X_train = train_data.drop('target', axis=1)
+Y_train = train_data['target']
 
-For classification datasets:
-```shell script
-$python3 ./experiments/classification/compare_vanilla.py
-For 'adult' dataset, SKiGB achieved accuracy of '0.855' and SGB achieved accuracy of '0.853'.
-For 'australia' dataset, SKiGB achieved accuracy of '0.855' and SGB achieved accuracy of '0.83'.
-For 'car' dataset, SKiGB achieved accuracy of '0.984' and SGB achieved accuracy of '0.982'.
-For 'cleveland' dataset, SKiGB achieved accuracy of '0.737' and SGB achieved accuracy of '0.677'.
-For 'ljubljana' dataset, SKiGB achieved accuracy of '0.696' and SGB achieved accuracy of '0.621'.
+'''Step 3: Provide monotonic influence information'''
+advice  = np.array([1,0,1,1-1], dtype=int)
+# 0 for features with no influence, +1 for features with isotonic influence, -1 for antitonic influences
+
+'''Step 4: Train the model'''
+kigb = KiGB(lamda=1, epsilon=0.1, advice=advice, objective='regression', trees=30)
+kigb.fit(X_train, y_train)
+
+'''Step 5: Test the model'''
+kigb.predict(X_test)
 ```
 
+To use Scikit version of KiGB, import `from core.scikit.skigb import SKiGB`
 
-For regression datasets:
-```shell script
-$python3 ./experiments/regression/compare_vanilla.py  
+## Replication
 
-For 'abalone' dataset, SKiGB achieved mean-squared error of '5.377' and SGB achieved mean-squared error of '5.491'.
-For 'autompg' dataset, SKiGB achieved mean-squared error of '9.793' and SGB achieved mean-squared error of '13.623'.
-For 'autoprice' dataset, SKiGB achieved mean-squared error of '8.866' and SGB achieved mean-squared error of '8.945'.
-For 'boston' dataset, SKiGB achieved mean-squared error of '24.065' and SGB achieved mean-squared error of '21.493'.
-For 'california' dataset, SKiGB achieved mean-squared error of '47.159' and SGB achieved mean-squared error of '47.468'.
-For 'cpu' dataset, SKiGB achieved mean-squared error of '0.185' and SGB achieved mean-squared error of '0.204'.
-For 'crime' dataset, SKiGB achieved mean-squared error of '2.211' and SGB achieved mean-squared error of '2.296'.
-For 'redwine' dataset, SKiGB achieved mean-squared error of '0.381' and SGB achieved mean-squared error of '0.419'.
-For 'whitewine' dataset, SKiGB achieved mean-squared error of '0.426' and SGB achieved mean-squared error of '0.439'.
-For 'windsor' dataset, SKiGB achieved mean-squared error of '3.9' and SGB achieved mean-squared error of '4.626'.
-```
- 
+Replication details are available in the experiments section [here](https://github.com/starling-lab/KiGB/blob/master/experiments/README.md)
 
-**Monotonic Baselines**:  Comparison of KiGB against monotonic boosting approaches (table 3 & 4).
- 
- 
- SKiGB comparision for classification datasets with Monoensemble (MONO):
- ```shell
-$python3 ./experiments/classification/compare_monoensemble.py
-For 'adult' dataset, SKiGB achieved accuracy of '0.855' and Monoensemble achieved accuracy of '0.857'.
-For 'australia' dataset, SKiGB achieved accuracy of '0.855' and Monoensemble achieved accuracy of '0.884'.
-For 'car' dataset, SKiGB achieved accuracy of '0.984' and Monoensemble achieved accuracy of '0.765'.
-For 'cleveland' dataset, SKiGB achieved accuracy of '0.737' and Monoensemble achieved accuracy of '0.74'.
-For 'ljubljana' dataset, SKiGB achieved accuracy of '0.696' and Monoensemble achieved accuracy of '0.611'.
-``` 
 
-LKiGB comparision for classification datasets with LMC:
- ```shell
-$python3 ./experiments/classification/compare_lmc.py
-.
-[LIGHTGBM] [Warning] ...
-.
-For 'adult' dataset, LKiGB achieved accuracy of '0.865' and LMC achieved accuracy of '0.863'.
-For 'australia' dataset, LKiGB achieved accuracy of '0.878' and LMC achieved accuracy of '0.867'.
-For 'car' dataset, LKiGB achieved accuracy of '0.971' and LMC achieved accuracy of '0.959'.
-For 'cleveland' dataset, LKiGB achieved accuracy of '0.757' and LMC achieved accuracy of '0.73'.
-For 'ljubljana' dataset, LKiGB achieved accuracy of '0.721' and LMC achieved accuracy of '0.718'.
-``` 
- 
- 
-LKiGB comparision for regression datasets with LMC:
- ```shell
-$python3 ./experiments/regression/compare_lmc.py
-.
-[LIGHTGBM] [Warning] ...
-.
-For 'abalone' dataset, LKiGB achieved mean-squared error of '4.786' and LMC achieved mean-squared error of '4.797'.
-For 'autompg' dataset, LKiGB achieved mean-squared error of '8.047' and LMC achieved mean-squared error of '8.33'.
-For 'autoprice' dataset, LKiGB achieved mean-squared error of '14.953' and LMC achieved mean-squared error of '15.614'.
-For 'boston' dataset, LKiGB achieved mean-squared error of '15.496' and LMC achieved mean-squared error of '16.292'.
-For 'california' dataset, LKiGB achieved mean-squared error of '48.517' and LMC achieved mean-squared error of '50.94'.
-For 'cpu' dataset, LKiGB achieved mean-squared error of '0.206' and LMC achieved mean-squared error of '0.208'.
-For 'crime' dataset, LKiGB achieved mean-squared error of '1.834' and LMC achieved mean-squared error of '1.847'.
-For 'redwine' dataset, LKiGB achieved mean-squared error of '0.382' and LMC achieved mean-squared error of '0.397'.
-For 'whitewine' dataset, LKiGB achieved mean-squared error of '0.45' and LMC achieved mean-squared error of '0.467'.
-For 'windsor' dataset, LKiGB achieved mean-squared error of '2.524' and LMC achieved mean-squared error of '2.634'.
-``` 
+## Citation
+
+If you build on this code or the ideas of this paper, please use the following citation.
+
+    @inproceedings{kokelaaai20,
+      author = {Harsha Kokel and Phillip Odom and Shuo Yang and Sriraam Natarajan},
+      title  = {A Unified Framework for Knowledge Intensive Gradient Boosting: Leveraging Human Experts for Noisy Sparse Domains},
+      booktitle = {AAAI},
+      year   = {2020}
+    }
+
+
+## Acknowledgements
+
+* Harsha Kokel and Sriraam Natarajan acknowledge the support of Turvo Inc. and CwC Program Contract W911NF-15-1-0461 with the US Defense Advanced Research Projects Agency (DARPA)
+and the Army Research Office (ARO).
 
