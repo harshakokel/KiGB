@@ -63,3 +63,6 @@ class SKiGB(GradientBoostingRegressor, RegressorMixin):
 
     def predict(self, X, y=None):
         return self.kigb.predict(X)
+
+    def feature_importance(self):
+        return self.kigb.feature_importances_

@@ -16,25 +16,36 @@ Both these implementations are done in python.
 ```python
 '''Step 1: Import the class'''
 from core.lgbm.lkigb import LKiGB as KiGB
+import pandas as pd
+import numpy as np
 
 '''Step 2: Import dataset'''
-train_data = pd.read_csv('train.csv')
-X_train = train_data.drop('target', axis=1)
-Y_train = train_data['target']
+train_data = pd.read_csv('datasets/classification/car/train_0.csv')
+X_train = train_data.drop('class', axis=1)
+Y_train = train_data['class']
+test_data = pd.read_csv('datasets/classification/car/test.csv')
+X_test = train_data.drop('class', axis=1)
+Y_test = train_data['class']
+
 
 '''Step 3: Provide monotonic influence information'''
-advice  = np.array([1,0,1,1-1], dtype=int)
+advice  = np.array([-1,-1,0,+1,0,+1], dtype=int)
 # 0 for features with no influence, +1 for features with isotonic influence, -1 for antitonic influences
 
 '''Step 4: Train the model'''
-kigb = KiGB(lamda=1, epsilon=0.1, advice=advice, objective='regression', trees=30)
-kigb.fit(X_train, y_train)
+kigb = KiGB(lamda=1, epsilon=0.1, advice=advice, objective='binary', trees=30)
+kigb.fit(X_train, Y_train)
 
 '''Step 5: Test the model'''
-kigb.predict(X_test)
+Y_pred = kigb.predict(X_test)
+feature_importance = kigb.feature_importance()
+
 ```
 
 To use Scikit version of KiGB, import `from core.scikit.skigb import SKiGB`
+
+To perform regression, use `objective='regression'`.
+
 
 ## Replication
 

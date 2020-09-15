@@ -82,3 +82,6 @@ class LKiGB(LGBMModel, RegressorMixin):
             return self.kigb.predict(X, num_iteration=num_iteration)
         else:
             return (self.kigb.predict(X, num_iteration=num_iteration) > 0.5).astype(int)
+
+    def feature_importance(self):
+        return self.kigb.feature_importance()
