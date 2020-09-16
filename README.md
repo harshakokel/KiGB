@@ -46,6 +46,26 @@ To use Scikit version of KiGB, import `from core.scikit.skigb import SKiGB`
 
 To perform regression, use `objective='regression'`.
 
+## Rendering Tree
+
+LightGBM Tree can be rendered using following command:
+
+```python
+import lightgbm as lgb
+tree_0 = lgb.create_tree_digraph(kigb.kigb, tree_index=0, name='tree_0')
+tree_0.render("tree_0")
+```
+
+Or 
+
+
+```python
+import lightgbm as lgb
+import matplotlib.pyplot as plt
+ax = lgb.plot_tree(kigb.kigb, tree_index=0, figsize=(20, 20))
+plt.show()
+```
+
 
 ## Replication
 
