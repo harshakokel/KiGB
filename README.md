@@ -48,7 +48,7 @@ To perform regression, use `objective='regression'`.
 
 ## Rendering Tree
 
-LightGBM Tree can be rendered using following command:
+LKiGB trees can be rendered using following commands:
 
 ```python
 import lightgbm as lgb
@@ -66,6 +66,15 @@ ax = lgb.plot_tree(kigb.kigb, tree_index=0, figsize=(20, 20))
 plt.show()
 ```
 
+SKiGB trees can be rendered to a file using following commands:
+
+```python  
+from core.scikit.utils import export_tree
+feature_names = X_train.columns.values
+export_tree(kigb=kigb, tree_index=0, feature_names=feature_names, filename="tree_0.png")
+```
+
+**Note**: `tree_index` takes the index of the tree to be rendered.
 
 ## Replication
 

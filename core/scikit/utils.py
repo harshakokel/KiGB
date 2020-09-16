@@ -1,14 +1,10 @@
 import numpy as np
-# import pydotplus
-import matplotlib.pyplot as plt
 from collections import defaultdict
 
 import pydotplus
 import collections
 from sklearn import tree
-from sklearn.metrics import accuracy_score
 from sklearn.metrics import mean_squared_error
-from sklearn.metrics import mean_absolute_error
 import logging
 
 """ KiGB update of Scikit Gradient boosting Regressor"""
@@ -151,3 +147,27 @@ def mse_score(clf, X_test, y_test):
     for i, y_pred in enumerate(clf._staged_decision_function(X_test)):
         score[i] = mean_squared_error(y_test, np.reshape(y_pred, (1, -1))[0])
     return score
+
+
+def export_tree(kigb, tree_index, feature_names, filename='temp.png'):
+    regressor = kigb.kigb.estimators_.flatten()[tree_index]
+    dot_data = tree.export_graphviz(regressor,
+                                    feature_names=feature_names,
+                                    out_file=None,
+                                    filled=True,
+                                    node_ids=True,
+                                    rounded=True)
+    graph = pydotplus.graph_from_dot_data(dot_data)
+    colors = ('turquoise', 'orange')
+    edges = collections.defaultdict(list)
+    for edge in graph.get_edge_list():
+        edges[edge.get_source()].append(int(edge.get_destination()))
+    for edge in edges:
+        edges[edge].sort()
+        for i in range(2):
+            dest = graph.get_node(str(edges[edge][i]))[0]
+            if str(edges[edge][i]) not in edges.keys():
+                dest.set_fillcolor(colors[i])
+            else:
+                dest.set_fillcolor('white')
+    graph.write_png(filename)
