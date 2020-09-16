@@ -32,9 +32,13 @@ class LKiGB(LGBMModel, RegressorMixin):
         zero_update=True
         logging.debug("Starting KiGB fit")
         lgb_train = lgb.Dataset(X, y, free_raw_data=False)
-
+        param = self.get_params().copy()
+        param.pop('trees')
+        param.pop('lamda')
+        param.pop('epsilon')
+        param.pop('advice')
         # Learn first tree
-        kigb_gbm = lgb.train(self.get_params(),
+        kigb_gbm = lgb.train(param,
                             lgb_train,
                             num_boost_round=1)
         if render: # Render tree in pdf for debugging
@@ -52,7 +56,7 @@ class LKiGB(LGBMModel, RegressorMixin):
         for h in range(1, self.trees + 1):
             lgb_train = lgb.Dataset(X, y, free_raw_data=False) # Bug in Lightgbm, need to initialize data
             # Learn next tree with initial model
-            kigb_gbm = lgb.train(self.get_params(),
+            kigb_gbm = lgb.train(param,
                                 lgb_train,
                                 num_boost_round=1,
                                 init_model=kigb_gbm)

@@ -53,8 +53,8 @@ def update_leaf_values(full_tree, values, lower, upper, str_model):
     r = re.compile(LEAF_VALUE)
     old_value = list(filter(r.match, tree))[0]
     new_value = LEAF_VALUE +'='+ np.array2string(values, separator=' ').replace('\n','').replace('[','').replace(']','')
-    logging.debug("old leaves: "+ old_value)
-    logging.debug("new leaves: " + new_value)
+    logging.info("old leaves: "+ old_value)
+    logging.info("new leaves: " + new_value)
     return str_model.replace(old_value, new_value)
 
 
