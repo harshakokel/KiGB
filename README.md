@@ -92,14 +92,14 @@ logging.basicConfig(format='%(message)s', level=logging.INFO)
 
 This should provide additional information in logs as shown below, for each tree.  
 
-```python
+```
 old leaves: leaf_value=0.12, 0.23, 0.32, 0.9
 new leaves: leaf_value=-0.1, 0.02, 0.3, 0.7
 ```
 
 Log level `DEBUG` provides further details about which constraint (isotonic or antitonic) was violated at which node in the tree. It also provides the penalty term, violation and sample size for each left and right child of the violated node as shown below. To see all that information, use `level=logging.DEBUG` in the above logging configuration.
 
-```python
+```
 antitonic constraint not satisfied for tree 0 node 2
 left penalty: 0.0155 sample: 20000 violation: 0.062
 right penalty: 0.002 sample: 30000 violation: 0.0122
