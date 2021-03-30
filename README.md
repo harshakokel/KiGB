@@ -115,10 +115,14 @@ right penalty: 0.002 sample: 30000 violation: 0.0122
 If you build on this code or the ideas of this paper, please use the following citation.
 
     @inproceedings{kokelaaai20,
-      author = {Harsha Kokel and Phillip Odom and Shuo Yang and Sriraam Natarajan},
-      title  = {A Unified Framework for Knowledge Intensive Gradient Boosting: Leveraging Human Experts for Noisy Sparse Domains},
-      booktitle = {AAAI},
-      year   = {2020}
+     	title={A Unified Framework for Knowledge Intensive Gradient Boosting: Leveraging Human Experts for Noisy Sparse Domains}, 
+	    volume={34}, 
+    	DOI={10.1609/aaai.v34i04.5873}, 
+	    number={04}, 
+    	journal={Proceedings of the AAAI Conference on Artificial Intelligence}, 
+	    author={Kokel, Harsha and Odom, Phillip and Yang, Shuo and Natarajan, Sriraam}, 
+    	year={2020}, 
+		pages={4460-4468} 
     }
 
 
